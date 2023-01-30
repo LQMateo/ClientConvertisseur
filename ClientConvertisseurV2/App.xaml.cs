@@ -1,8 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation and Contributors.
 // Licensed under the MIT License.
 
-using ClientConvertisseurV1.services;
-using ClientConvertisseurV1.views;
+using ClientConvertisseurV2.ViewModels;
+using ClientConvertisseurV2.Views;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -19,38 +20,44 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Devices.Portable;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace ClientConvertisseurV1
+namespace ClientConvertisseurV2
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
     public partial class App : Application
     {
-        /// <summary>
-        /// Gets the instance to resolve application services.
-        /// </summary>
-        public ServiceProvider Services { get; }
 
+        public ConvertisseurEuroViewModel ConvertisseurEuroVM
+        {
+            get { return Ioc.Default.GetService<ConvertisseurEuroViewModel>(); }
+        }
 
+        public ConvertisseurDeviseViewModel ConvertisseurDeviseVM
+        {
+            get { return Ioc.Default.GetService<ConvertisseurDeviseViewModel>(); }
+        }
+
+        public static FrameworkElement MainRoot { get; private set; }
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
         {
-            /// <summary>
-            /// Configures the services for the application.
-            /// </summary>
-            ServiceCollection services = new ServiceCollection();
-            services.AddTransient<IService, WSService>();
             this.InitializeComponent();
+            Ioc.Default.ConfigureServices(
+                new ServiceCollection()
+                .AddSingleton<ConvertisseurEuroViewModel>()
+                .AddSingleton<ConvertisseurDeviseViewModel>()
+                .BuildServiceProvider()
+            );
         }
 
         /// <summary>
@@ -61,15 +68,11 @@ namespace ClientConvertisseurV1
         {
             m_window = new MainWindow();
             Frame rootFrame = new Frame();
-            this.m_window.Content = rootFrame;            
+            this.m_window.Content = rootFrame;
             m_window.Activate();
-            rootFrame.Navigate(typeof(ConvertisseurEuroPage));
+            rootFrame.Navigate(typeof(ConvertisseurDeviseEuro));
+            MainRoot = m_window.Content as FrameworkElement;
         }
-
-        /// <summary>
-        /// Gets the current app instance in use
-        /// </summary>
-        public new static App Current => (App)Application.Current;
 
         private Window m_window;
     }

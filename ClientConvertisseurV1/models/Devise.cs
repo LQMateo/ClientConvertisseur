@@ -1,0 +1,50 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ClientConvertisseurV1.models
+{
+    public class Devise
+    {
+        private int id;
+        private string? nomDevise;
+        private double taux;
+
+        public double Taux
+        {
+            get { return taux; }
+            set { taux = value; }
+        }
+
+        public string? NomDevise
+        {
+            get { return nomDevise; }
+            set { nomDevise = value; }
+        }
+
+        public int Id
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
+        public Devise()
+        {
+        }
+
+        public Devise(int id, string? nomDevise, double taux)
+        {
+            Taux = taux;
+            NomDevise = nomDevise;
+            Id = id;
+        }
+
+        public static double ConvertEuroToDevise(double valeurD, Devise devise)
+        {
+            return devise.Taux * valeurD;
+        }
+    }
+}
