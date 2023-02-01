@@ -14,30 +14,9 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace ClientConvertisseurV2.ViewModels
 {
-    public class ConvertisseurEuroViewModel: ObservableObject
+    public class ConvertisseurEuroViewModel: ConvertisseurBase
     {
-        //Can use a proprety binding
-        public event PropertyChangedEventHandler? PropertyChanged;
-      
-        // Variable for binding
-        private double vStart;
-        private double vResult;
-        private Devise champSelectDevise;
-
-        public Devise ChampSelectDevise
-        {
-            get { return champSelectDevise; }
-            set { champSelectDevise = value; }
-        }
-
-        ObservableCollection<Devise> devises = new ObservableCollection<Devise>();
-        public double VStart { get => vStart; set => vStart = value; }
-        public double VResult { get => vResult; set { vResult = value; OnPropertyChanged(); } }
-        public ObservableCollection<Devise> Devises { get => devises; set { devises = value; OnPropertyChanged(); } }
-
-
         public IRelayCommand BtnSetConversion { get; }   
-
         
         public void ActionSetConversion()
         {
@@ -51,30 +30,7 @@ namespace ClientConvertisseurV2.ViewModels
         {
             GetDataOnLoadAsync();
             BtnSetConversion = new RelayCommand(ActionSetConversion);
-        }
-
-        public async void GetDataOnLoadAsync()
-        {
-            WSService ws = new WSService("");
-            List<Devise> result = await ws.GetDevisesAsync("devises");
-
-            if (Devises != null)
-                Devises = new ObservableCollection<Devise>(result);
-            else
-                ShowAsync("L'API ne fonctionne pas. ");
-        }
-
-        private async void ShowAsync(String message)
-        {
-            ContentDialog contentDialog = new ContentDialog
-            {
-                Title = "Erreur",
-                Content = message,
-                CloseButtonText = "Ok"
-            };
-            contentDialog.XamlRoot = App.MainRoot.XamlRoot;
-            ContentDialogResult result = await contentDialog.ShowAsync();
-        }
+        }      
 
     }
 }
